@@ -1,8 +1,33 @@
 "use server"
 
+import { z } from 'zod';
+
+const AnswerSchema = z.object({
+  text: z.string(),
+  is_correct: z.boolean(),
+});
+
+const QuestionSchema = z.object({
+  text: z.string(),
+  answers: z.array(AnswerSchema),
+});
+
+const ResourceSchema = z.object({
+  title: z.string(),
+  link: z.string(),
+});
+
+const LessonSchema = z.object({
+  date: z.string(),
+  topic: z.string(),
+  description: z.string(),
+  quiz: z.array(QuestionSchema),
+  resources: z.array(ResourceSchema),
+});
+
 interface Answer {
   text: string
-  isCorrect: boolean
+  is_correct: boolean
 }
 
 interface Question {
@@ -28,42 +53,23 @@ export default async function getLesson(): Promise<Lesson | null> {
     const response = await fetch(`${process.env.API_ENDPOINT}/lesson/get`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
     const data = await response.json();
-    if (isValidLesson(data)) {
-      return data;
+    const parsedLesson = LessonSchema.safeParse(data);
+
+    if (parsedLesson.success) {
+      return parsedLesson.data;
     } else {
-      throw new Error('Invalid lesson structure');
+      console.error('Invalid lesson structure:', parsedLesson.error);
+      return null;
     }
   } catch (error) {
     console.error('Error fetching lesson:', error);
     return null;
   }
-}
-
-function isValidLesson(data: any): data is Lesson {
-  return (
-    typeof data.date === 'string' &&
-    typeof data.topic === 'string' &&
-    typeof data.description === 'string' &&
-    Array.isArray(data.quiz) &&
-    data.quiz.every((question: any) =>
-      typeof question.text === 'string' &&
-      Array.isArray(question.answers) &&
-      question.answers.every((answer: any) =>
-        typeof answer.text === 'string' &&
-        typeof answer.is_correct === 'boolean'
-      )
-    ) &&
-    Array.isArray(data.resources) &&
-    data.resources.every((resource: any) =>
-      typeof resource.title === 'string' &&
-      typeof resource.link === 'string'
-    )
-  );
 }

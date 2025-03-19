@@ -1,28 +1,38 @@
 import os
 import json
+from dataclasses import asdict
+
+from dotenv import load_dotenv
+from supabase import create_client, Client
 
 from tutor.type import Lesson
 
 
-def load_db(db_path: str) -> list[Lesson]:
-    with open(db_path, "r") as f:
-        if os.path.getsize(db_path) == 0:
-            return []
-        content = json.load(f)
-        return (
-            [Lesson.model_validate_json(json.dumps(lesson)) for lesson in content]
-            if content
-            else []
+class DB:
+    def __init__(self):
+        self.client = self.get_client()
+
+    def get_lessons(self):
+        response = self.client.table("lessons").select("*").execute()
+        return [
+            Lesson.model_validate_json(json.dumps(lesson.get("lesson", {})))
+            for lesson in response.data
+        ]
+
+    def save_lesson(self, lesson: Lesson):
+        self.client.table("lessons").insert(asdict(lesson)).execute()
+
+    def get_lesson_by_date(self, date: str):
+        result = self.client.table("lessons").select("*").eq("date", date).execute().data[0]
+        return Lesson.model_validate_json(
+            json.dumps(
+                result
+            )
         )
 
-
-def save_lesson(lesson: Lesson, db_path: str):
-    lessons = load_db(db_path)
-    lessons.append(lesson)
-    with open(db_path, "w") as f:
-        f.write(json.dumps([l.model_dump() for l in lessons]))
-
-
-def get_lesson_by_date(date: str, db_path: str):
-    lessons = load_db(db_path)
-    return next((l for l in lessons if l.date == date), None)
+    @staticmethod
+    def get_client() -> Client:
+        load_dotenv()
+        url: str = os.environ.get("SUPABASE_URL") or ""
+        key: str = os.environ.get("SUPABASE_KEY") or ""
+        return create_client(url, key)

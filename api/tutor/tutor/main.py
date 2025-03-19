@@ -11,7 +11,7 @@ app = FastAPI()
 
 @app.get("/lesson/get")
 def lesson():
-    path = f"{Path(__file__).parent}/../../db.json"
+    path = f"{Path(__file__).parent}/db.json"
     date = datetime.now().strftime("%Y-%m-%d")
     if lesson := get_lesson_by_date(date, path):
         return lesson

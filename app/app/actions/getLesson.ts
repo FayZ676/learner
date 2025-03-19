@@ -25,7 +25,7 @@ export interface Lesson {
 
 export default async function getLesson(): Promise<Lesson | null> {
   try {
-    const response = await fetch(`${process.env.API_ENDPOINT}/get`, {
+    const response = await fetch(`${process.env.API_ENDPOINT}/lesson/get`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

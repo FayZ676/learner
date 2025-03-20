@@ -12,13 +12,11 @@ export default function QuizView({ quiz }: QuizProps) {
             {quiz.map((question, questionIndex) => (
                 <div key={questionIndex}>
                     <p>{question.text}</p>
-                    <ul>
+                    <ul className='list-none pl-0'>
                         {question.answers.map((answer, answerIndex) => (
                             <li key={answerIndex}>
-                                <label>
-                                    <input type="checkbox" disabled />
-                                    {answer.text}
-                                </label>
+                                <input type="checkbox" className='checkbox mr-2' />
+                                {answer.text}
                             </li>
                         ))}
                     </ul>

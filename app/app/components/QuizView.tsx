@@ -169,7 +169,7 @@ export default function QuizComponent({ quiz }: QuizViewProps) {
     return (
         <div className="">
             <h3>Quiz</h3>
-            <div className='min-w-lg mx-auto p-4'>
+            <div className='min-w-sm max-w-lg'>
                 {!quizCompleted ? renderQuestion() : renderResults()}
             </div>
         </div>

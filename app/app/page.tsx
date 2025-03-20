@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import getLesson, { Lesson } from "./actions/getLesson";
-import LessonView from "@/components/LessonView";
+import LessonView from "./components/LessonView";
 
 export default function Home() {
   const [lesson, setLesson] = useState<Lesson | null>(null)

@@ -23,12 +23,12 @@ class DB:
         self.client.table("lessons").insert(asdict(lesson)).execute()
 
     def get_lesson_by_date(self, date: str):
-        result = self.client.table("lessons").select("*").eq("date", date).execute().data[0]
-        return Lesson.model_validate_json(
-            json.dumps(
-                result
+        if result := self.client.table("lessons").select("*").eq("date", date).execute().data:
+            return Lesson.model_validate_json(
+                json.dumps(
+                    result[0]
+                )
             )
-        )
 
     @staticmethod
     def get_client() -> Client:
@@ -36,3 +36,6 @@ class DB:
         url: str = os.environ.get("SUPABASE_URL") or ""
         key: str = os.environ.get("SUPABASE_KEY") or ""
         return create_client(url, key)
+    
+if __name__ == "__main__":
+    print(DB().get_lesson_by_date("2025-03-20"))

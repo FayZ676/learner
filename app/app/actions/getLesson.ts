@@ -1,6 +1,7 @@
 "use server"
 
 import { z } from 'zod';
+import { Lesson } from '../types';
 
 const AnswerSchema = z.object({
   text: z.string(),
@@ -24,29 +25,6 @@ const LessonSchema = z.object({
   quiz: z.array(QuestionSchema),
   resources: z.array(ResourceSchema),
 });
-
-interface Answer {
-  text: string
-  is_correct: boolean
-}
-
-interface Question {
-  text: string
-  answers: Answer[]
-}
-
-interface Resource {
-  title: string
-  link: string
-}
-
-export interface Lesson {
-  date: string
-  topic: string
-  description: string
-  quiz: Question[]
-  resources: Resource[]
-}
 
 export default async function getLesson(): Promise<Lesson | null> {
   try {

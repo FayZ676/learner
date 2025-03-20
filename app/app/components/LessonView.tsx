@@ -1,5 +1,7 @@
-import { Lesson } from '@/app/actions/getLesson'
 import React from 'react'
+
+import { Lesson } from '../types'
+import QuizView from './QuizView'
 
 interface LessonProps {
   lesson: Lesson
@@ -22,23 +24,8 @@ export default function LessonView({ lesson }: LessonProps) {
           </li>
         ))}
       </ul>
-
-      <h3>Quiz</h3>
-      {lesson.quiz.map((question, questionIndex) => (
-        <div key={questionIndex}>
-          <p>{question.text}</p>
-          <ul>
-            {question.answers.map((answer, answerIndex) => (
-              <li key={answerIndex}>
-                <label>
-                  <input type="checkbox" disabled />
-                  {answer.text}
-                </label>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      
+      <QuizView quiz={lesson.quiz} />
     </div>
   )
 }

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-import getLesson, { Lesson } from "./actions/getLesson";
+import getLesson from "./actions/getLesson";
 import LessonView from "./components/LessonView";
+import { Lesson } from "./types";
 
 export default function Home() {
   const [lesson, setLesson] = useState<Lesson | null>(null)

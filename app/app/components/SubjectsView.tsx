@@ -45,7 +45,7 @@ export default function SubjectsView({ onSelect }: SubjectsViewProps) {
                 if (modal) {
                     modal.showModal();
                 }
-            }}>add subject</button>
+            }}>new subject</button>
             <dialog id="my_modal_1" className="modal">
                 <div className="modal-box">
                     <textarea className="textarea w-full" placeholder="Subject" value={subjectInput} onChange={(e) => { setSubjectInput(e.target.value) }}></textarea>

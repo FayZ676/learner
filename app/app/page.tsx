@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
+import { Lesson } from "./types";
+
 import getLesson from "./actions/getLesson";
-import getSubjects from "./actions/getSubjects";
-import addSubject from "./actions/addSubject";
 
 import LessonView from "./components/LessonView";
-import { Lesson } from "./types";
+import SubjectsView from "./components/SubjectsView";
 
 
 function getLocalDate(): string {
@@ -19,58 +19,26 @@ function getLocalDate(): string {
 
 
 export default function Home() {
-  const [subjectInput, setSubjectInput] = useState<string>("")
-  const [subjects, setSubjects] = useState<string[] | null>(null)
+  const [subject, setSubject] = useState<string | null>(null)
   const [lesson, setLesson] = useState<Lesson | null>(null)
 
   useEffect(() => {
-    // const fetchLesson = async () => {
-    //   setLesson(await getLesson(getLocalDate()))
-    // };
+    async function fetchLesson() {
+      subject && setLesson(await getLesson(getLocalDate(), subject))
+    };
 
-    const fetchSubjects = async () => {
-      setSubjects(await getSubjects())
+    if (subject) {
+      fetchLesson();
     }
-    // fetchLesson();
-    fetchSubjects();
-  }, [])
+  }, [subject])
 
-  function handleAddSubject() {
-    addSubject(subjectInput)
+  function handleSelectSubject(selection: string) {
+    setSubject(selection)
   }
 
   return (
     <div>
-      <div>
-        <button className="btn" onClick={() => {
-          const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
-          if (modal) {
-            modal.showModal();
-          }
-        }}>add subject</button>
-        <dialog id="my_modal_1" className="modal">
-          <div className="modal-box">
-            <textarea className="textarea w-full" placeholder="Subject" value={subjectInput} onChange={(e) => { setSubjectInput(e.target.value) }}></textarea>
-            <div className="modal-action">
-              <form method="dialog" onSubmit={(e) => {
-                e.preventDefault();
-                handleAddSubject();
-              }}>
-                <button className="btn">add</button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-      </div>
-      {subjects && <ul>
-        {subjects.map((subject, index) => {
-          return (
-            <li key={index}>
-              {subject}
-            </li>
-          )
-        })}
-      </ul>}
+      <SubjectsView onSelect={handleSelectSubject} />
       {lesson && <LessonView lesson={lesson} />}
     </div>
   );

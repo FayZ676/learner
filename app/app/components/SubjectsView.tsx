@@ -5,19 +5,23 @@ import getSubjects from "../actions/getSubjects";
 
 
 interface SubjectsViewProps {
-    updateSubject: (selection: string) => void
+    updateActiveSubject: (selection: string) => void
     activeSubject: string
     loadingLesson: boolean
 }
 
 
-export default function SubjectsView({ updateSubject, activeSubject, loadingLesson }: SubjectsViewProps) {
+export default function SubjectsView({ updateActiveSubject, activeSubject, loadingLesson }: SubjectsViewProps) {
     const [subjectInput, setSubjectInput] = useState<string | null>(null)
     const [subjects, setSubjects] = useState<string[] | null>(null)
 
     useEffect(() => {
         async function fetchSubjects() {
-            setSubjects(await getSubjects())
+            const subjects = await getSubjects()
+            setSubjects(subjects)
+            if (subjects) {
+                updateActiveSubject(subjects[0])
+            }
         }
         fetchSubjects();
     }, [])
@@ -30,13 +34,13 @@ export default function SubjectsView({ updateSubject, activeSubject, loadingLess
                     setSubjects(updatedSubjects);
                 }
                 fetchUpdatedSubjects();
-                updateSubject(subjectInput)
+                updateActiveSubject(subjectInput)
             });
         }
     }
 
     function handleChangeSubject(e: React.ChangeEvent<HTMLSelectElement>) {
-        updateSubject(e.target.value)
+        updateActiveSubject(e.target.value)
     }
 
     return (

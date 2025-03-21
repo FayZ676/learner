@@ -33,9 +33,7 @@ export default function Home() {
       setLoading(false)
     };
 
-    if (subject) {
-      fetchLesson();
-    }
+    fetchLesson();
   }, [subject])
 
   function handleSelectSubject(selection: string) {
@@ -44,7 +42,7 @@ export default function Home() {
 
   return (
     <div>
-      <SubjectsView updateSubject={handleSelectSubject} activeSubject={subject ? subject : ""} loadingLesson={loading} />
+      <SubjectsView updateActiveSubject={handleSelectSubject} activeSubject={subject ? subject : ""} loadingLesson={loading} />
       {loading && <div className="flex gap-2"><span className="loading loading-dots loading-md"></span><p>Loading lesson</p></div>}
       {lesson && <LessonView lesson={lesson} />}
     </div>

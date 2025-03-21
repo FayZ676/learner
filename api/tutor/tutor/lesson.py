@@ -1,5 +1,5 @@
 import os
-import json
+import uuid
 from dataclasses import asdict
 
 from openai import OpenAI
@@ -25,9 +25,10 @@ class LessonResourcesResponse(BaseModel):
     resources: list[Resource]
 
 
-def get_lesson(subject: str, date: str, prev_topics: list[str]):
-    lesson_base = get_base(subject, date, prev_topics).lesson
+def generate_lesson(subject: str, date: str, prev_topics: list[str]):
+    lesson_base = generate_base(subject, date, prev_topics).lesson
     lesson = Lesson(
+        id=str(uuid.uuid4()),
         subject=subject,
         resources=get_resources(lesson_base.topic).resources,
         **asdict(lesson_base)
@@ -35,7 +36,7 @@ def get_lesson(subject: str, date: str, prev_topics: list[str]):
     return lesson
 
 
-def get_base(
+def generate_base(
     message: str, date: str, prev_topics: list[str], system: str = ""
 ) -> LessonBaseResponse:
     completion = client.beta.chat.completions.parse(

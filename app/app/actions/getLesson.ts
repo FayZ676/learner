@@ -19,6 +19,8 @@ const ResourceSchema = z.object({
 });
 
 const LessonSchema = z.object({
+  id: z.string(),
+  subject: z.string(),
   date: z.string(),
   topic: z.string(),
   description: z.string(),

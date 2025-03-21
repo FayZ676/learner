@@ -33,5 +33,6 @@ class LessonBase(BaseModel):
 
 @dataclass(eq=True, frozen=True)  # type: ignore
 class Lesson(LessonBase):
+    id: str
     subject: str
     resources: list[Resource]

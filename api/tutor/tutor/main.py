@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from tutor.lesson import get_lesson
+from tutor.lesson import generate_lesson
 from tutor.db import DB
 
 
@@ -10,10 +10,9 @@ app = FastAPI()
 @app.get("/lesson/get")
 def lesson_get(date: str, subject: str):
     db = DB()
-    subject = "Python data structures and algorithms. Particularly for interview style and leetcode style questions."
     if lesson := db.get_lesson_by_date(subject, date):
         return lesson
-    lesson = get_lesson(subject, date, DB().get_subject_topics(subject))
+    lesson = generate_lesson(subject, date, db.get_subject_topics(subject))
     db.save_lesson(lesson)
     return lesson
 

@@ -14,7 +14,9 @@ export interface Resource {
 }
 
 export interface Lesson {
+    id: string
     date: string
+    subject: string
     topic: string
     description: string
     quiz: Question[]

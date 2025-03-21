@@ -19,12 +19,16 @@ function getLocalDate(): string {
 
 
 export default function Home() {
+  const [loading, setLoading] = useState<boolean>(false)
   const [subject, setSubject] = useState<string | null>(null)
   const [lesson, setLesson] = useState<Lesson | null>(null)
 
   useEffect(() => {
     async function fetchLesson() {
+      setLesson(null)
+      setLoading(true)
       subject && setLesson(await getLesson(getLocalDate(), subject))
+      setLoading(false)
     };
 
     if (subject) {
@@ -39,6 +43,7 @@ export default function Home() {
   return (
     <div>
       <SubjectsView onSelect={handleSelectSubject} />
+      {loading && <div className="flex gap-2"><span className="loading loading-dots loading-md"></span><p>Loading lesson</p></div>}
       {lesson && <LessonView lesson={lesson} />}
     </div>
   );

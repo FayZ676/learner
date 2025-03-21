@@ -28,7 +28,9 @@ class LessonResourcesResponse(BaseModel):
 def get_lesson(subject: str, date: str, prev_topics: list[str]):
     lesson_base = get_base(subject, date, prev_topics).lesson
     lesson = Lesson(
-        **asdict(lesson_base), resources=get_resources(lesson_base.topic).resources
+        subject=subject,
+        resources=get_resources(lesson_base.topic).resources,
+        **asdict(lesson_base)
     )
     return lesson
 

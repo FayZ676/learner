@@ -25,22 +25,26 @@ class LessonResourcesResponse(BaseModel):
     resources: list[Resource]
 
 
-def get_lesson(subject: str, date: str):
-    lesson_base = get_base(subject, date).lesson
+def get_lesson(subject: str, date: str, prev_topics: list[str]):
+    lesson_base = get_base(subject, date, prev_topics).lesson
     lesson = Lesson(
         **asdict(lesson_base), resources=get_resources(lesson_base.topic).resources
     )
     return lesson
 
 
-def get_base(message: str, date: str, system: str = "") -> LessonBaseResponse:
+def get_base(
+    message: str, date: str, prev_topics: list[str], system: str = ""
+) -> LessonBaseResponse:
     completion = client.beta.chat.completions.parse(
         model=MODEL,
         messages=[
             {"role": "system", "content": system},
             {
                 "role": "user",
-                "content": lesson_prompt.substitute(subject=message, date=date),
+                "content": lesson_prompt.substitute(
+                    subject=message, date=date, prev_topics=prev_topics
+                ),
             },
         ],
         response_format=LessonBaseResponse,

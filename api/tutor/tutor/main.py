@@ -13,6 +13,6 @@ def lesson(date: str):
     subject = "Python data structures and algorithms. Particularly for interview style and leetcode style questions."
     if lesson := db.get_lesson_by_date(date):
         return lesson
-    lesson = get_lesson(subject, date)
+    lesson = get_lesson(subject, date, DB().get_topics())
     db.save_lesson(lesson)
     return lesson

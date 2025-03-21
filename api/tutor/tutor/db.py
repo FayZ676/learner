@@ -19,16 +19,22 @@ class DB:
             for lesson in response.data
         ]
 
+    def get_topics(self):
+        response = self.client.table("lessons").select("topic").execute()
+        return [str(dict(topic).get("topic")) for topic in response.data]
+
     def save_lesson(self, lesson: Lesson):
         self.client.table("lessons").insert(asdict(lesson)).execute()
 
     def get_lesson_by_date(self, date: str):
-        if result := self.client.table("lessons").select("*").eq("date", date).execute().data:
-            return Lesson.model_validate_json(
-                json.dumps(
-                    result[0]
-                )
-            )
+        if (
+            result := self.client.table("lessons")
+            .select("*")
+            .eq("date", date)
+            .execute()
+            .data
+        ):
+            return Lesson.model_validate_json(json.dumps(result[0]))
 
     @staticmethod
     def get_client() -> Client:
@@ -36,6 +42,7 @@ class DB:
         url: str = os.environ.get("SUPABASE_URL") or ""
         key: str = os.environ.get("SUPABASE_KEY") or ""
         return create_client(url, key)
-    
+
+
 if __name__ == "__main__":
-    print(DB().get_lesson_by_date("2025-03-20"))
+    print(DB().get_topics())

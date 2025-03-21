@@ -10,7 +10,6 @@ interface LessonProps {
 export default function LessonView({ lesson }: LessonProps) {
   return (
     <div className='flex flex-col'>
-      <p>{lesson.date}</p>
       <h2>{lesson.topic}</h2>
       <p>{lesson.description}</p>
 

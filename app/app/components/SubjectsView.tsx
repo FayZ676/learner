@@ -6,11 +6,12 @@ import getSubjects from "../actions/getSubjects";
 
 interface SubjectsViewProps {
     onSelect: (selection: string) => void
+    loadingLesson: boolean
 }
 
 
-export default function SubjectsView({ onSelect }: SubjectsViewProps) {
-    const [subjectInput, setSubjectInput] = useState<string>("")
+export default function SubjectsView({ onSelect, loadingLesson }: SubjectsViewProps) {
+    const [subjectInput, setSubjectInput] = useState<string | null>(null)
     const [subjects, setSubjects] = useState<string[] | null>(null)
 
     useEffect(() => {
@@ -22,25 +23,30 @@ export default function SubjectsView({ onSelect }: SubjectsViewProps) {
     }, [])
 
     function handleAddSubject() {
-        addSubject(subjectInput).then(() => {
+        subjectInput && addSubject(subjectInput).then(() => {
             async function fetchUpdatedSubjects() {
                 const updatedSubjects = await getSubjects();
                 setSubjects(updatedSubjects);
             }
             fetchUpdatedSubjects();
+            onSelect(subjectInput)
         });
+    }
+
+    function handleChangeSubject(e: React.ChangeEvent<HTMLSelectElement>) {
+        onSelect(e.target.value)
     }
 
     return (
         <div className='flex gap-2 ml-auto '>
             {
-                subjects && <select className="select" onChange={(e) => { onSelect(e.target.value) }}>
+                subjects && <select className="select" onChange={handleChangeSubject}>
                     {subjects.map((subject, index) => {
                         return (<option key={index}>{subject}</option>)
                     })}
                 </select>
             }
-            <button className="btn" onClick={() => {
+            <button className="btn" disabled={loadingLesson} onClick={() => {
                 const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
                 if (modal) {
                     modal.showModal();
@@ -48,13 +54,13 @@ export default function SubjectsView({ onSelect }: SubjectsViewProps) {
             }}>new subject</button>
             <dialog id="my_modal_1" className="modal">
                 <div className="modal-box">
-                    <textarea className="textarea w-full" placeholder="Subject" value={subjectInput} onChange={(e) => { setSubjectInput(e.target.value) }}></textarea>
+                    <textarea className="textarea w-full" placeholder="Subject" value={subjectInput || ""} onChange={(e) => { setSubjectInput(e.target.value) }}></textarea>
                     <div className="modal-action">
                         <form method="dialog" onSubmit={(e) => {
                             e.preventDefault();
                             handleAddSubject();
                         }}>
-                            <button className="btn" onClick={() => {
+                            <button className="btn" disabled={!subjectInput} onClick={() => {
                                 const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
                                 if (modal) {
                                     modal.close();

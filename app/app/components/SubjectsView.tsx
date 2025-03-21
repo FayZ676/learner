@@ -23,14 +23,16 @@ export default function SubjectsView({ updateSubject, activeSubject, loadingLess
     }, [])
 
     function handleAddSubject() {
-        subjectInput && addSubject(subjectInput).then(() => {
-            async function fetchUpdatedSubjects() {
-                const updatedSubjects = await getSubjects();
-                setSubjects(updatedSubjects);
-            }
-            fetchUpdatedSubjects();
-            updateSubject(subjectInput)
-        });
+        if (subjectInput) {
+            addSubject(subjectInput).then(() => {
+                async function fetchUpdatedSubjects() {
+                    const updatedSubjects = await getSubjects();
+                    setSubjects(updatedSubjects);
+                }
+                fetchUpdatedSubjects();
+                updateSubject(subjectInput)
+            });
+        }
     }
 
     function handleChangeSubject(e: React.ChangeEvent<HTMLSelectElement>) {

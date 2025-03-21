@@ -27,7 +27,9 @@ export default function Home() {
     async function fetchLesson() {
       setLesson(null)
       setLoading(true)
-      subject && setLesson(await getLesson(getLocalDate(), subject))
+      if (subject) {
+        setLesson(await getLesson(getLocalDate(), subject))
+      }
       setLoading(false)
     };
 

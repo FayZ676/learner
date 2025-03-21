@@ -42,7 +42,7 @@ export default function Home() {
 
   return (
     <div>
-      <SubjectsView onSelect={handleSelectSubject} loadingLesson={loading} />
+      <SubjectsView updateSubject={handleSelectSubject} activeSubject={subject ? subject : ""} loadingLesson={loading} />
       {loading && <div className="flex gap-2"><span className="loading loading-dots loading-md"></span><p>Loading lesson</p></div>}
       {lesson && <LessonView lesson={lesson} />}
     </div>

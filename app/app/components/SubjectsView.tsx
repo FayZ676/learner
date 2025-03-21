@@ -5,12 +5,13 @@ import getSubjects from "../actions/getSubjects";
 
 
 interface SubjectsViewProps {
-    onSelect: (selection: string) => void
+    updateSubject: (selection: string) => void
+    activeSubject: string
     loadingLesson: boolean
 }
 
 
-export default function SubjectsView({ onSelect, loadingLesson }: SubjectsViewProps) {
+export default function SubjectsView({ updateSubject, activeSubject, loadingLesson }: SubjectsViewProps) {
     const [subjectInput, setSubjectInput] = useState<string | null>(null)
     const [subjects, setSubjects] = useState<string[] | null>(null)
 
@@ -18,7 +19,6 @@ export default function SubjectsView({ onSelect, loadingLesson }: SubjectsViewPr
         async function fetchSubjects() {
             setSubjects(await getSubjects())
         }
-
         fetchSubjects();
     }, [])
 
@@ -29,18 +29,18 @@ export default function SubjectsView({ onSelect, loadingLesson }: SubjectsViewPr
                 setSubjects(updatedSubjects);
             }
             fetchUpdatedSubjects();
-            onSelect(subjectInput)
+            updateSubject(subjectInput)
         });
     }
 
     function handleChangeSubject(e: React.ChangeEvent<HTMLSelectElement>) {
-        onSelect(e.target.value)
+        updateSubject(e.target.value)
     }
 
     return (
         <div className='flex gap-2 ml-auto '>
             {
-                subjects && <select className="select" onChange={handleChangeSubject}>
+                subjects && <select className="select" value={activeSubject} onChange={handleChangeSubject}>
                     {subjects.map((subject, index) => {
                         return (<option key={index}>{subject}</option>)
                     })}

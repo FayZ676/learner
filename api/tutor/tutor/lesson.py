@@ -46,7 +46,6 @@ def get_base(message: str, date: str, system: str = "") -> LessonBaseResponse:
         response_format=LessonBaseResponse,
     )
     content = completion.choices[0].message.content
-    print(content)
     return LessonBaseResponse.model_validate_json(content or "")
 
 

@@ -26,9 +26,9 @@ const LessonSchema = z.object({
   resources: z.array(ResourceSchema),
 });
 
-export default async function getLesson(): Promise<Lesson | null> {
+export default async function getLesson(date: string): Promise<Lesson | null> {
   try {
-    const response = await fetch(`${process.env.API_ENDPOINT}/lesson/get`, {
+    const response = await fetch(`${process.env.API_ENDPOINT}/lesson/get?date=${date}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

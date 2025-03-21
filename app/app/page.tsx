@@ -11,7 +11,8 @@ export default function Home() {
 
   useEffect(() => {
     const fetchLesson = async () => {
-      setLesson(await getLesson())
+      const dateString = new Date().toISOString().slice(0, 10)
+      setLesson(await getLesson(dateString))
     };
     fetchLesson();
   }, [])

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { Question } from '../types';
 
 interface QuizViewProps {
@@ -61,57 +60,45 @@ export default function QuizComponent({ quiz }: QuizViewProps) {
 
     const renderQuestion = () => {
         const currentQuestion = quiz[currentQuestionIndex];
-
         return (
             <div className="flex flex-col gap-4">
-                <p className="text-lg">{!quizCompleted && `(${currentQuestionIndex + 1}/${quiz.length}) `}{currentQuestion.text}</p>
-                <div className="grid grid-cols-1 gap-3">
-                    {currentQuestion.answers.map((answer, index) => (
-                        <div
-                            key={index}
-                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAnswers[currentQuestionIndex] === index
-                                ? 'border-blue-500'
-                                : 'border-gray-200 hover:border-gray-400'
-                                }`}
-                            onClick={() => handleOptionSelect(index)}
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className={`w-6 h-6 flex items-center justify-center rounded-full border-2 ${selectedAnswers[currentQuestionIndex] === index
-                                    ? 'border-blue-500'
-                                    : 'border-gray-300'
-                                    }`}>
-                                    {selectedAnswers[currentQuestionIndex] === index && (
-                                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                    )}
-                                </div>
-                                <span>{answer.text}</span>
-                            </div>
+                <div className="card bg-base-100 shadow-xl">
+                    <div className="card-body">
+                        <h2 className="card-title">
+                            {!quizCompleted && `Question ${currentQuestionIndex + 1} of ${quiz.length}`}
+                        </h2>
+                        <p className="text-lg">{currentQuestion.text}</p>
+                        <div className="form-control flex flex-col gap-4">
+                            {currentQuestion.answers.map((answer, index) => (
+                                <label key={index} className="label cursor-pointer justify-start">
+                                    <input
+                                        type="radio"
+                                        name="current-answer"
+                                        className="radio radio-primary"
+                                        checked={selectedAnswers[currentQuestionIndex] === index}
+                                        onChange={() => handleOptionSelect(index)}
+                                    />
+                                    <span className="label-text ml-2 whitespace-normal">{answer.text}</span>
+                                </label>
+                            ))}
                         </div>
-                    ))}
-                </div>
-
-                <div className="flex justify-between mt-4">
-                    <button
-                        onClick={handlePreviousQuestion}
-                        disabled={currentQuestionIndex === 0}
-                        className={`px-4 py-2 rounded ${currentQuestionIndex === 0
-                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                            : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                            }`}
-                    >
-                        Previous
-                    </button>
-
-                    <button
-                        onClick={handleNextQuestion}
-                        disabled={!isAnswerSelected()}
-                        className={`px-4 py-2 rounded ${!isAnswerSelected()
-                            ? 'bg-blue-300 text-white cursor-not-allowed'
-                            : 'bg-blue-500 hover:bg-blue-600 text-white'
-                            }`}
-                    >
-                        {currentQuestionIndex === quiz.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                    </button>
+                        <div className="card-actions justify-between mt-4">
+                            <button
+                                onClick={handlePreviousQuestion}
+                                disabled={currentQuestionIndex === 0}
+                                className="btn btn-ghost"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={handleNextQuestion}
+                                disabled={!isAnswerSelected()}
+                                className="btn btn-primary"
+                            >
+                                {currentQuestionIndex === quiz.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -119,57 +106,71 @@ export default function QuizComponent({ quiz }: QuizViewProps) {
 
     const renderResults = () => {
         const results = calculateResults();
-
         return (
-            <div className="p-6 rounded-lg">
-                <div className="mb-6">
-                    <p className="text-lg font-semibold">
-                        You scored {results.correct} out of {results.total} ({results.percentage}%)
-                    </p>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                    {quiz.map((question, questionIndex) => {
-                        const selectedAnswerIndex = selectedAnswers[questionIndex];
-                        const selectedAnswerText = selectedAnswerIndex !== -1
-                            ? question.answers[selectedAnswerIndex].text
-                            : 'Not answered';
-                        const isCorrect = selectedAnswerIndex !== -1 && question.answers[selectedAnswerIndex].is_correct;
-
-                        return (
-                            <div key={questionIndex} className="p-4 border rounded-lg">
-                                <p className="font-medium">{question.text}</p>
-                                <div className="mt-2 flex gap-2 items-center">
-                                    <span className="text-sm font-semibold">Your answer:</span>
-                                    <span className={`${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                                        {selectedAnswerText}
-                                    </span>
-                                </div>
-                                {!isCorrect && (
-                                    <div className="mt-1 flex gap-2 items-center">
-                                        <span className="text-sm font-semibold">Correct answer:</span>
-                                        <span className="text-green-600">{getCorrectAnswerText(questionIndex)}</span>
-                                    </div>
-                                )}
+            <div className="card bg-base-100 shadow-xl">
+                <div className="card-body">
+                    <h2 className="card-title">Quiz Results</h2>
+                    <div className="mb-6">
+                        <div className="stats shadow">
+                            <div className="stat">
+                                <div className="stat-value text-primary">{results.percentage}%</div>
+                                <div className="stat-desc">{results.correct} out of {results.total} correct</div>
                             </div>
-                        );
-                    })}
-                </div>
+                        </div>
+                    </div>
 
-                <button
-                    onClick={restartQuiz}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
-                >
-                    Restart Quiz
-                </button>
+                    <div className="space-y-4 mb-6">
+                        {quiz.map((question, questionIndex) => {
+                            const selectedAnswerIndex = selectedAnswers[questionIndex];
+                            const selectedAnswerText = selectedAnswerIndex !== -1
+                                ? question.answers[selectedAnswerIndex].text
+                                : 'Not answered';
+                            const isCorrect = selectedAnswerIndex !== -1 && question.answers[selectedAnswerIndex].is_correct;
+                            return (
+                                <div key={questionIndex} className="collapse collapse-plus bg-base-200">
+                                    <input type="checkbox" />
+                                    <div className="collapse-title font-medium flex justify-between">
+                                        Question {questionIndex + 1}
+                                        <span className={`badge ml-2 ${isCorrect ? 'badge-success' : 'badge-error'}`}>
+                                            {isCorrect ? 'Correct' : 'Incorrect'}
+                                        </span>
+                                    </div>
+                                    <div className="collapse-content">
+                                        <p className="font-medium">{question.text}</p>
+                                        <div className="mt-2 flex gap-2 items-center">
+                                            <span className="text-sm font-semibold">Your answer:</span>
+                                            <span className={`${isCorrect ? 'text-success' : 'text-error'}`}>
+                                                {selectedAnswerText}
+                                            </span>
+                                        </div>
+                                        {!isCorrect && (
+                                            <div className="mt-1 flex gap-2 items-center">
+                                                <span className="text-sm font-semibold">Correct answer:</span>
+                                                <span className="text-success">{getCorrectAnswerText(questionIndex)}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="card-actions justify-center">
+                        <button
+                            onClick={restartQuiz}
+                            className="btn btn-primary"
+                        >
+                            Restart Quiz
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     };
 
     return (
         <div className="">
-            <h3>Quiz</h3>
-            <div className='min-w-xs max-w-lg mx-auto'>
+            <h3 className="">Quiz</h3>
+            <div className="max-w-lg mx-auto">
                 {!quizCompleted ? renderQuestion() : renderResults()}
             </div>
         </div>

@@ -64,7 +64,7 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
                     <div className="modal-box">
                         <ul className="list">
                             {subjects?.map((subject, index) => {
-                                return (<li className="list-row flex justify-between">
+                                return (<li key={index} className="list-row flex justify-between">
                                     <span>{subject}</span>
                                     <button className="btn">delete</button>
                                 </li>)

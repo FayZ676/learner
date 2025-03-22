@@ -37,6 +37,10 @@ class DB:
     def save_subject(self, subject: str):
         self.client.table("subjects").insert({"subject": subject}).execute()
 
+    def delete_subject_topics(self, subject: str):
+        self.client.table("subjects").delete().eq("subject", subject).execute()
+        self.client.table("lessons").delete().eq("subject", subject).execute()
+
     def save_lesson(self, lesson: Lesson):
         self.client.table("lessons").insert(asdict(lesson)).execute()
 
@@ -60,4 +64,4 @@ class DB:
 
 
 if __name__ == "__main__":
-    print(DB().get_subject_topics(""))
+    print(DB().delete_subject_topics("french greetings"))

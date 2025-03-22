@@ -25,3 +25,8 @@ def subjects_get():
 @app.post("/subjects/add")
 def subjects_add(subject: str):
     return DB().save_subject(subject)
+
+
+@app.delete("/subjects/delete")
+def subjects_delete(subject: str):
+    return DB().delete_subject_topics(subject)

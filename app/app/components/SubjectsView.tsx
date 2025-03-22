@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import addSubject from "../actions/addSubject";
 import getSubjects from "../actions/getSubjects";
+import deleteSubject from '../actions/deleteSubject';
 
 
 interface SubjectsViewProps {
@@ -43,6 +44,19 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
         updateActiveSubject(e.target.value)
     }
 
+    async function handleDeleteSubject() {
+        await deleteSubject(activeSubject)
+        const subjects = await getSubjects()
+        setSubjects(subjects)
+        if (subjects) {
+            updateActiveSubject(subjects[0])
+        }
+        const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
+        if (modal) {
+            modal.close();
+        }
+    }
+
     return (
         <>
             <h2>Subject</h2>
@@ -66,7 +80,7 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
                             {subjects?.map((subject, index) => {
                                 return (<li key={index} className="list-row flex justify-between">
                                     <span>{subject}</span>
-                                    <button className="btn">delete</button>
+                                    <button className="btn" onClick={handleDeleteSubject}>delete</button>
                                 </li>)
                             })}
                         </ul>

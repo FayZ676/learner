@@ -4,17 +4,18 @@ import { Lesson } from '../types'
 import QuizView from './QuizView'
 
 interface LessonProps {
-  lesson: Lesson
+  lesson: Lesson | null
 }
 
 export default function LessonView({ lesson }: LessonProps) {
   return (
     <div className='flex flex-col'>
-      <h2>{lesson.topic}</h2>
-      <p>{lesson.description}</p>
-
+      {lesson && <>
+        <h2>{lesson.topic}</h2>
+        <p>{lesson.description}</p>
+      </>}
       <h3>Resources</h3>
-      <ul>
+      {lesson ? <ul>
         {lesson.resources.map((resource, index) => (
           <li key={index}>
             <a href={resource.link} target="_blank" rel="noopener noreferrer">
@@ -22,9 +23,8 @@ export default function LessonView({ lesson }: LessonProps) {
             </a>
           </li>
         ))}
-      </ul>
-      
-      <QuizView quiz={lesson.quiz} />
+      </ul> : <p>Nothing to show here.</p>}
+      <QuizView quiz={lesson ? lesson.quiz : []} />
     </div>
   )
 }

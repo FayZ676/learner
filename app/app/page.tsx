@@ -44,7 +44,8 @@ export default function Home() {
     <div>
       <SubjectsView updateActiveSubject={handleSelectSubject} activeSubject={subject ? subject : ""} loadingLesson={loading} />
       {loading && <div className="flex gap-2"><span className="loading loading-dots loading-md"></span><p>Loading lesson</p></div>}
-      {lesson && <LessonView lesson={lesson} />}
+      {/* NOTE: We need to cache lesson here. The API has cold starts. That's why it takes a long time to display initially. */}
+      <LessonView lesson={lesson} />
     </div>
   );
 }

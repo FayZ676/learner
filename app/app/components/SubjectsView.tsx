@@ -61,6 +61,7 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
         <>
             <h2>Subject</h2>
             <div className='flex gap-2 ml-auto '>
+                {/* NOTE: We need to cache subjects as well. API has cold starts, thats why this doesn't show initially. */}
                 {
                     subjects && <select className="select w-full" value={activeSubject} onChange={handleChangeSubject}>
                         {subjects.map((subject, index) => {

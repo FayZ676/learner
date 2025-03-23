@@ -170,9 +170,9 @@ export default function QuizComponent({ quiz }: QuizViewProps) {
     return (
         <div className="">
             <h3 className="">Quiz</h3>
-            <div className="max-w-lg mx-auto">
+            {(quiz.length < 0) ? <div className="max-w-lg mx-auto">
                 {!quizCompleted ? renderQuestion() : renderResults()}
-            </div>
+            </div> : <p>Nothing to show here.</p>}
         </div>
     );
 };

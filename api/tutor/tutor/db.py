@@ -67,10 +67,6 @@ class DB:
         quiz = [
             Question.model_validate_json(json.dumps(q)) for q in lesson.get("quiz", [])
         ]
-        resources = [
-            Resource.model_validate_json(json.dumps(r))
-            for r in lesson.get("resources", [])
-        ]
         l = Lesson.model_validate_json(json.dumps(lesson))
         return Lesson(
             id=l.id,
@@ -78,8 +74,8 @@ class DB:
             subject=l.subject,
             topic=l.topic,
             description=l.description,
+            resources=l.resources,
             quiz=quiz,
-            resources=resources,
         )
 
 

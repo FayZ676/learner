@@ -33,7 +33,7 @@ def generate_lesson(subject: str, date: str, prev_topics: list[str]):
     data = {
         "id": str(uuid.uuid4()),
         "subject": subject,
-        "resources": get_resources(lesson_base.topic),
+        "resources": [asdict(r) for r in get_resources(lesson_base.topic).resources],
     }
     data.update(**asdict(lesson_base))
     return DB.parse_lesson(data)
@@ -59,7 +59,7 @@ def generate_base(
     return LessonBaseResponse.model_validate_json(content or "")
 
 
-def get_resources(message: str, system: str = ""):
+def get_resources(message: str, system: str = "") -> LessonResourcesResponse:
     url = "https://api.perplexity.ai/chat/completions"
     payload = {
         "model": "sonar",
@@ -98,5 +98,4 @@ def get_resources(message: str, system: str = ""):
 
 
 if __name__ == "__main__":
-    for r in get_resources("Python decorators"):
-        print(r)
+    print(generate_lesson("french greetings", "2025-03-22", []))

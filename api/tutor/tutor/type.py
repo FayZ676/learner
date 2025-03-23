@@ -29,8 +29,6 @@ class LessonBase(BaseModel):
     description: str
     quiz: list[Question]
 
-    model_config = ConfigDict(frozen=True)
-
 
 @dataclass(eq=True, frozen=True)  # type: ignore
 class Lesson(LessonBase):

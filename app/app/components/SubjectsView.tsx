@@ -19,6 +19,7 @@ export default function SubjectsView({
   controlsDisabled,
 }: SubjectsViewProps) {
   const [subjectInput, setSubjectInput] = useState<string>("");
+  const [subjectToDelete, setSubjectToDelete] = useState<string>("");
 
   function handleAddSubject() {
     if (subjectInput.trim()) {
@@ -38,16 +39,19 @@ export default function SubjectsView({
   }
 
   async function handleDeleteSubject() {
-    if (activeSubject) {
-      await deleteSubject(activeSubject);
+    if (subjectToDelete) {
+      await deleteSubject(subjectToDelete);
       const updatedSubjects = await getSubjects();
       if (updatedSubjects && updatedSubjects.length > 0) {
         onSubjectsUpdate(updatedSubjects);
-        onSubjectChange(updatedSubjects[0]);
+        if (subjectToDelete === activeSubject) {
+          onSubjectChange(updatedSubjects[0]);
+        }
       } else {
         onSubjectsUpdate([]);
         onSubjectChange("");
       }
+      setSubjectToDelete("");
       closeModal();
     }
   }
@@ -106,7 +110,7 @@ export default function SubjectsView({
                     <button
                       className="btn btn-sm btn-error"
                       onClick={() => {
-                        onSubjectChange(subject); // Select this subject before deletion
+                        setSubjectToDelete(subject);
                         handleDeleteSubject();
                       }}
                     >

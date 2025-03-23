@@ -18,15 +18,24 @@ export default function LessonView({ lesson }: LessonProps) {
       )}
       <h3>Resources</h3>
       {lesson ? (
-        <ul>
+        <div className="carousel carousel-center rounded-box space-x-4 p-4">
           {lesson.resources.map((resource, index) => (
-            <li key={index}>
-              <a href={resource.link} target="_blank" rel="noopener noreferrer">
-                {resource.title}
-              </a>
-            </li>
+            <a
+              key={index}
+              href={resource.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card bg-base-200 shadow-md no-underline"
+            >
+              <div className="card-body">
+                <h4 className="card-title mt-0">{resource.title}</h4>
+                <span className="text-xs font-light text-gray-500">
+                  {resource.link}
+                </span>
+              </div>
+            </a>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>Nothing to show here.</p>
       )}

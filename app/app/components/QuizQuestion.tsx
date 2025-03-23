@@ -16,9 +16,9 @@ export default function QuizQuestion({
   totalQuestions,
 }: QuizQuestionProps) {
   return (
-    <div className="card bg-base-100 shadow-xl">
+    <div className="card bg-base-200 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title">
+        <h2 className="card-title mt-0">
           Question {questionNumber} of {totalQuestions}
         </h2>
         <p className="text-lg">{question.text}</p>

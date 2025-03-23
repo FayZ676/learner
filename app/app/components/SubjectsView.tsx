@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import addSubject from "../actions/addSubject";
 import deleteSubject from "../actions/deleteSubject";
 import getSubjects from "../actions/getSubjects";
+import { Trash2 } from "lucide-react";
 
 interface SubjectsViewProps {
   subjects: string[];
@@ -97,14 +98,13 @@ export default function SubjectsView({
 
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4">Manage Subjects</h3>
-
+          <h3 className="font-bold text-lg mb-4 mt-0">Manage Subjects</h3>
           {subjects.length > 0 ? (
             <ul className="list-none pl-0">
               {subjects.map((subject, index) => (
                 <li
                   key={index}
-                  className="flex justify-between items-center border-b border-b-gray-200 pb-2"
+                  className="flex justify-between items-center rounded-md bg-base-200 p-2 px-3"
                 >
                   <span>{subject}</span>
                   <button
@@ -114,7 +114,7 @@ export default function SubjectsView({
                       handleDeleteSubject();
                     }}
                   >
-                    delete
+                    <Trash2 strokeWidth={2} />
                   </button>
                 </li>
               ))}
@@ -132,7 +132,10 @@ export default function SubjectsView({
             />
           </div>
 
-          <div className="modal-action">
+          <div className="modal-action flex justify-between">
+            <button className="btn" onClick={closeModal}>
+              Close
+            </button>
             <button
               className="btn btn-primary"
               disabled={!subjectInput.trim()}
@@ -142,9 +145,6 @@ export default function SubjectsView({
               }}
             >
               Add Subject
-            </button>
-            <button className="btn" onClick={closeModal}>
-              Close
             </button>
           </div>
         </div>

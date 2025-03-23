@@ -3,11 +3,13 @@
 import { z } from "zod";
 
 import { unstable_cacheTag as cacheTag } from "next/cache";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 const SubjectsSchema = z.array(z.string());
 
 export default async function getSubjects() {
   "use cache";
+  cacheLife("hours")
   cacheTag("subjects");
 
   try {

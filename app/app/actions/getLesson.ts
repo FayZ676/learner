@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { Lesson } from "../types";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 const AnswerSchema = z.object({
   text: z.string(),
@@ -33,6 +34,7 @@ export default async function getLesson(
   subject: string
 ): Promise<Lesson | null> {
   "use cache"
+  cacheLife("hours")
   
   try {
     const response = await fetch(

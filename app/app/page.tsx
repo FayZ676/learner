@@ -80,13 +80,14 @@ export default function Home() {
         </div>
       )}
 
-      {!loadingLesson && (
-        <div>
-          <p>Please add a subject to get started.</p>
-        </div>
-      )}
-
-      {!loadingLesson && <LessonView lesson={lesson} />}
+      {!loadingLesson &&
+        (subjects.length === 0 ? (
+          <div>
+            <p>Please add a subject to get started.</p>
+          </div>
+        ) : (
+          <LessonView lesson={lesson} />
+        ))}
     </div>
   );
 }

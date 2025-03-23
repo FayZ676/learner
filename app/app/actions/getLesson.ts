@@ -32,6 +32,8 @@ export default async function getLesson(
   date: string,
   subject: string
 ): Promise<Lesson | null> {
+  "use cache"
+  
   try {
     const response = await fetch(
       `${process.env.API_ENDPOINT}/lesson/get?date=${date}&subject=${subject}`,

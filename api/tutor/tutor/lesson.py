@@ -1,5 +1,6 @@
 import os
 import uuid
+import requests
 from dataclasses import asdict
 
 from openai import OpenAI
@@ -8,11 +9,12 @@ from dotenv import load_dotenv
 
 from tutor.type import LessonBase, Resource
 from tutor.db import DB
-from tutor.prompts import lesson_prompt
+from tutor.prompts import lesson_prompt, resources_prompt
 
 
 load_dotenv()
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+perplexity_key = os.environ.get("PERPLEXITY_API_KEY")
 
 
 MODEL = "gpt-4o-2024-08-06"
@@ -36,7 +38,7 @@ def generate_lesson(subject: str, date: str, prev_topics: list[str]):
 def generate_base(
     message: str, date: str, prev_topics: list[str], system: str = ""
 ) -> LessonBaseResponse:
-    completion = client.beta.chat.completions.parse(
+    completion = openai_client.beta.chat.completions.parse(
         model=MODEL,
         messages=[
             {"role": "system", "content": system},
@@ -53,49 +55,44 @@ def generate_base(
     return LessonBaseResponse.model_validate_json(content or "")
 
 
-def get_resources(message: str, system: str = "") -> LessonResourcesResponse:
-    response = client.responses.create(
-        model=MODEL,
-        input=[
+def get_resources(message: str, system: str = ""):
+    url = "https://api.perplexity.ai/chat/completions"
+    payload = {
+        "model": "sonar",
+        "messages": [
             {"role": "system", "content": system},
-            {"role": "user", "content": message},
-        ],
-        text={
-            "format": {
-                "type": "json_schema",
-                "name": "resources",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "resources": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "title": {"type": "string"},
-                                    "link": {"type": "string"},
-                                },
-                                "required": ["title", "link"],
-                                "additionalProperties": False,
-                            },
-                        }
-                    },
-                    "required": ["resources"],
-                    "additionalProperties": False,
-                },
-                "strict": True,
-            }
-        },
-        tools=[
             {
-                "type": "web_search_preview",
-                "user_location": {"type": "approximate"},
-                "search_context_size": "medium",
-            }
+                "role": "user",
+                "content": resources_prompt.substitute(topic=message),
+            },
         ],
-        temperature=1,
-        max_output_tokens=2048,
-        top_p=1,
-        store=True,
+        "max_tokens": 2000,
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "search_domain_filter": ["<any>"],
+        "return_images": True,
+        "return_related_questions": False,
+        "search_recency_filter": "year",
+        "top_k": 0,
+        "stream": False,
+        "presence_penalty": 0,
+        "frequency_penalty": 1,
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {"schema": LessonResourcesResponse.model_json_schema()},
+        },
+        "web_search_options": {"search_context_size": "low"},
+    }
+    headers = {
+        "Authorization": f"Bearer {perplexity_key}",
+        "Content-Type": "application/json",
+    }
+    response = requests.request("POST", url, json=payload, headers=headers).json()
+    return LessonResourcesResponse.model_validate_json(
+        response["choices"][0]["message"]["content"]
     )
-    return LessonResourcesResponse.model_validate_json(response.output_text)
+
+
+if __name__ == "__main__":
+    for r in get_resources("Python decorators"):
+        print(r)

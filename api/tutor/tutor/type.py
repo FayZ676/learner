@@ -19,6 +19,7 @@ class Question(BaseModel):
 class Resource(BaseModel):
     title: str
     link: str
+    image: str | None
 
 
 @dataclass(eq=True, frozen=True)

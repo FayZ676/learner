@@ -17,3 +17,18 @@ Return a lesson to assist in the study of the above subject. Make sure that the 
 
 """
 )
+
+
+resources_prompt = Template(
+    """
+## Topic
+$topic
+
+Return 1 to 2 resources for the above Topic. Please output a JSON object containing a list of resources with the following fields:
+- title
+- link
+- image
+
+Do not include any pre-amble, any post-amble. Do not include the "```json ... ```" ticks either. Simply return the raw JSON as is.
+"""
+)

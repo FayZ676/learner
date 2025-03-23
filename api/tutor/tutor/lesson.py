@@ -30,7 +30,11 @@ class LessonResourcesResponse(BaseModel):
 
 def generate_lesson(subject: str, date: str, prev_topics: list[str]):
     lesson_base = generate_base(subject, date, prev_topics).lesson
-    data = {"id": str(uuid.uuid4()), "subject": subject, "resources": ""}
+    data = {
+        "id": str(uuid.uuid4()),
+        "subject": subject,
+        "resources": get_resources(lesson_base.topic),
+    }
     data.update(**asdict(lesson_base))
     return DB.parse_lesson(data)
 

@@ -2,6 +2,7 @@ import React from "react";
 
 import { Lesson } from "../types";
 import QuizView from "./QuizView";
+import ResourceView from "./ResourceView";
 
 interface LessonProps {
   lesson: Lesson | null;
@@ -25,14 +26,9 @@ export default function LessonView({ lesson }: LessonProps) {
               href={resource.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="card bg-base-200 shadow-md no-underline"
+              className="no-underline"
             >
-              <div className="card-body">
-                <h4 className="card-title mt-0">{resource.title}</h4>
-                <span className="text-xs font-light text-gray-500">
-                  {resource.link}
-                </span>
-              </div>
+              <ResourceView title={resource.title} link={resource.link} />
             </a>
           ))}
         </div>

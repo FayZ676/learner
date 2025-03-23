@@ -20,7 +20,6 @@ export default function SubjectsView({
   controlsDisabled,
 }: SubjectsViewProps) {
   const [subjectInput, setSubjectInput] = useState<string>("");
-  const [deleting, setDeleting] = useState(false)
 
   function handleAddSubject() {
     if (subjectInput.trim()) {

@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
-import { z } from 'zod';
-import { Lesson } from '../types';
+import { z } from "zod";
+import { Lesson } from "../types";
 
 const AnswerSchema = z.object({
   text: z.string(),
@@ -28,16 +28,22 @@ const LessonSchema = z.object({
   resources: z.array(ResourceSchema),
 });
 
-export default async function getLesson(date: string, subject: string): Promise<Lesson | null> {
+export default async function getLesson(
+  date: string,
+  subject: string
+): Promise<Lesson | null> {
   try {
-    const response = await fetch(`${process.env.API_ENDPOINT}/lesson/get?date=${date}&subject=${subject}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${process.env.API_ENDPOINT}/lesson/get?date=${date}&subject=${subject}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error("Failed to fetch data");
     }
     const data = await response.json();
     const parsedLesson = LessonSchema.safeParse(data);
@@ -45,11 +51,11 @@ export default async function getLesson(date: string, subject: string): Promise<
     if (parsedLesson.success) {
       return parsedLesson.data;
     } else {
-      console.error('Invalid lesson structure:', parsedLesson.error);
+      console.error("Invalid lesson structure:", parsedLesson.error);
       return null;
     }
   } catch (error) {
-    console.error('Error fetching lesson:', error);
+    console.error("Error fetching lesson:", error);
     return null;
   }
 }

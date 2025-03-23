@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Lesson } from "./types";
@@ -9,8 +9,8 @@ import SubjectsView from "./components/SubjectsView";
 
 function getLocalDate(): string {
   const today = new Date();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
   return `${today.getFullYear()}-${month}-${day}`;
 }
 
@@ -20,38 +20,32 @@ export default function Home() {
   const [activeSubject, setActiveSubject] = useState<string>("");
   const [lesson, setLesson] = useState<Lesson | null>(null);
 
-  // Initial data loading
   useEffect(() => {
     async function initialize() {
       setLoading(true);
-
       try {
-        // Get all subjects first
         const fetchedSubjects = await getSubjects();
-
         if (fetchedSubjects && fetchedSubjects.length > 0) {
           setSubjects(fetchedSubjects);
           setActiveSubject(fetchedSubjects[0]);
-
-          // Now fetch the lesson for this subject
-          const fetchedLesson = await getLesson(getLocalDate(), fetchedSubjects[0]);
+          const fetchedLesson = await getLesson(
+            getLocalDate(),
+            fetchedSubjects[0]
+          );
           setLesson(fetchedLesson);
         }
       } catch (error) {
         console.error("Error during initialization:", error);
       }
-
       setLoading(false);
     }
 
     initialize();
   }, []);
 
-  // Handle subject changes after initial load
   useEffect(() => {
     async function fetchLessonForSubject() {
       if (!activeSubject || loading) return;
-
       setLoading(true);
       try {
         const fetchedLesson = await getLesson(getLocalDate(), activeSubject);
@@ -88,9 +82,7 @@ export default function Home() {
         </div>
       )}
 
-      {!loading && subjects.length > 0 && (
-        <LessonView lesson={lesson} />
-      )}
+      {!loading && subjects.length > 0 && <LessonView lesson={lesson} />}
     </div>
   );
 }

@@ -2,9 +2,14 @@
 
 import { z } from "zod";
 
+import { unstable_cacheTag as cacheTag } from "next/cache";
+
 const SubjectsSchema = z.array(z.string());
 
 export default async function getSubjects() {
+  "use cache";
+  cacheTag("subjects");
+
   try {
     const response = await fetch(`${process.env.API_ENDPOINT}/subjects/get`, {
       method: "GET",

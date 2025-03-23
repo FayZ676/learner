@@ -100,12 +100,9 @@ export default function SubjectsView({
             <h3 className="font-bold text-lg mb-4">Manage Subjects</h3>
 
             {subjects.length > 0 ? (
-              <ul className="list mb-4">
+              <ul className="list-none pl-0">
                 {subjects.map((subject, index) => (
-                  <li
-                    key={index}
-                    className="list-row flex justify-between items-center p-2 border-b"
-                  >
+                  <li key={index} className="flex justify-between items-center border-b border-b-gray-200 pb-2">
                     <span>{subject}</span>
                     <button
                       className="btn btn-sm btn-error"

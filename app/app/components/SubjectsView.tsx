@@ -71,12 +71,12 @@ export default function SubjectsView({
   }
 
   return (
-    <>
-      <h2>Subject</h2>
-      <div className="flex gap-2 ml-auto">
-        {subjects.length > 0 ? (
+    <div className="flex gap-2 ml-auto">
+      <fieldset className="fieldset w-full">
+        <legend className="fieldset-legend">Subject</legend>
+        <div className="join">
           <select
-            className="select w-full"
+            className="select w-full join-item"
             value={activeSubject}
             onChange={handleChangeSubject}
             disabled={controlsDisabled}
@@ -85,68 +85,70 @@ export default function SubjectsView({
               <option key={index}>{subject}</option>
             ))}
           </select>
-        ) : (
-          <div className="select w-full flex items-center justify-center text-gray-500">
-            No subjects available
+          <button
+            className="btn join-item"
+            disabled={controlsDisabled}
+            onClick={openModal}
+          >
+            manage
+          </button>
+        </div>
+      </fieldset>
+
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Manage Subjects</h3>
+
+          {subjects.length > 0 ? (
+            <ul className="list-none pl-0">
+              {subjects.map((subject, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center border-b border-b-gray-200 pb-2"
+                >
+                  <span>{subject}</span>
+                  <button
+                    className="btn btn-sm btn-error"
+                    onClick={() => {
+                      setSubjectToDelete(subject);
+                      handleDeleteSubject();
+                    }}
+                  >
+                    delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mb-4 text-gray-500">No subjects available</p>
+          )}
+
+          <div className="form-control">
+            <textarea
+              className="textarea textarea-bordered w-full"
+              placeholder="Add new subject"
+              value={subjectInput}
+              onChange={(e) => setSubjectInput(e.target.value)}
+            />
           </div>
-        )}
 
-        <button className="btn" disabled={controlsDisabled} onClick={openModal}>
-          manage
-        </button>
-
-        <dialog id="my_modal_1" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">Manage Subjects</h3>
-
-            {subjects.length > 0 ? (
-              <ul className="list-none pl-0">
-                {subjects.map((subject, index) => (
-                  <li key={index} className="flex justify-between items-center border-b border-b-gray-200 pb-2">
-                    <span>{subject}</span>
-                    <button
-                      className="btn btn-sm btn-error"
-                      onClick={() => {
-                        setSubjectToDelete(subject);
-                        handleDeleteSubject();
-                      }}
-                    >
-                      delete
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mb-4 text-gray-500">No subjects available</p>
-            )}
-
-            <div className="form-control">
-              <textarea
-                className="textarea textarea-bordered w-full"
-                placeholder="Add new subject"
-                value={subjectInput}
-                onChange={(e) => setSubjectInput(e.target.value)}
-              />
-            </div>
-
-            <div className="modal-action">
-              <button
-                className="btn btn-primary"
-                disabled={!subjectInput.trim()}
-                onClick={() => {
-                  handleAddSubject();
-                  closeModal();
-                }}
-              >
-                Add Subject
-              </button>
-              <button className="btn" onClick={closeModal}>
-                Close
-              </button>
-            </div>
+          <div className="modal-action">
+            <button
+              className="btn btn-primary"
+              disabled={!subjectInput.trim()}
+              onClick={() => {
+                handleAddSubject();
+                closeModal();
+              }}
+            >
+              Add Subject
+            </button>
+            <button className="btn" onClick={closeModal}>
+              Close
+            </button>
           </div>
-        </dialog>
-      </div>
-    </>
+        </div>
+      </dialog>
+    </div>
   );
 }

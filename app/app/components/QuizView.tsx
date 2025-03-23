@@ -49,7 +49,7 @@ export default function QuizView({ quiz }: { quiz: Question[] }) {
   return (
     <div>
       <h3>Quiz</h3>
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-xl mx-auto">
         {!quizCompleted ? (
           <div className="flex flex-col gap-4">
             <QuizQuestion

@@ -77,7 +77,7 @@ export default function Home() {
       )}
 
       {!loading && subjects.length === 0 && (
-        <div className="my-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
+        <div>
           <p>Please add a subject to get started.</p>
         </div>
       )}

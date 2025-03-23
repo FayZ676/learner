@@ -9,5 +9,6 @@ requires-python = ">= 3.12"
 dependencies = [
   "fastapi[standard]",
   "openai",
+  "requests==2.32.3",
   "supabase==2.13.0"
 ]

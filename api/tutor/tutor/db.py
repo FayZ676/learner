@@ -5,7 +5,7 @@ from dataclasses import asdict
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
-from tutor.type import Lesson
+from tutor.type import Lesson, Question, Resource
 
 
 class DB:
@@ -53,7 +53,7 @@ class DB:
             .execute()
             .data
         ):
-            return Lesson.model_validate_json(json.dumps(result[0]))
+            return self.parse_lesson(result[0])
 
     @staticmethod
     def get_client() -> Client:
@@ -61,6 +61,26 @@ class DB:
         url: str = os.environ.get("SUPABASE_URL") or ""
         key: str = os.environ.get("SUPABASE_KEY") or ""
         return create_client(url, key)
+
+    @staticmethod
+    def parse_lesson(lesson: dict) -> Lesson:
+        quiz = [
+            Question.model_validate_json(json.dumps(q)) for q in lesson.get("quiz", [])
+        ]
+        resources = [
+            Resource.model_validate_json(json.dumps(r))
+            for r in lesson.get("resources", [])
+        ]
+        l = Lesson.model_validate_json(json.dumps(lesson))
+        return Lesson(
+            id=l.id,
+            date=l.date,
+            subject=l.subject,
+            topic=l.topic,
+            description=l.description,
+            quiz=quiz,
+            resources=resources,
+        )
 
 
 if __name__ == "__main__":

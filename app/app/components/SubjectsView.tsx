@@ -8,7 +8,7 @@ interface SubjectsViewProps {
   activeSubject: string;
   onSubjectChange: (subject: string) => void;
   onSubjectsUpdate: (subjects: string[]) => void;
-  loadingLesson: boolean;
+  controlsDisabled: boolean;
 }
 
 export default function SubjectsView({
@@ -16,7 +16,7 @@ export default function SubjectsView({
   activeSubject,
   onSubjectChange,
   onSubjectsUpdate,
-  loadingLesson,
+  controlsDisabled,
 }: SubjectsViewProps) {
   const [subjectInput, setSubjectInput] = useState<string>("");
 
@@ -75,7 +75,7 @@ export default function SubjectsView({
             className="select w-full"
             value={activeSubject}
             onChange={handleChangeSubject}
-            disabled={loadingLesson}
+            disabled={controlsDisabled}
           >
             {subjects.map((subject, index) => (
               <option key={index}>{subject}</option>
@@ -87,7 +87,7 @@ export default function SubjectsView({
           </div>
         )}
 
-        <button className="btn" disabled={loadingLesson} onClick={openModal}>
+        <button className="btn" disabled={controlsDisabled} onClick={openModal}>
           manage
         </button>
 

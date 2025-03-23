@@ -15,29 +15,33 @@ function getLocalDate(): string {
 }
 
 export default function Home() {
-  const [loading, setLoading] = useState<boolean>(true);
+  // In page.tsx:
+  const [loadingSubjects, setLoadingSubjects] = useState<boolean>(true);
+  const [loadingLesson, setLoadingLesson] = useState<boolean>(false);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [activeSubject, setActiveSubject] = useState<string>("");
   const [lesson, setLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
     async function initialize() {
-      setLoading(true);
+      setLoadingSubjects(true);
       try {
         const fetchedSubjects = await getSubjects();
         if (fetchedSubjects && fetchedSubjects.length > 0) {
           setSubjects(fetchedSubjects);
           setActiveSubject(fetchedSubjects[0]);
+          setLoadingLesson(true);
           const fetchedLesson = await getLesson(
             getLocalDate(),
             fetchedSubjects[0]
           );
           setLesson(fetchedLesson);
+          setLoadingLesson(false);
         }
       } catch (error) {
         console.error("Error during initialization:", error);
       }
-      setLoading(false);
+      setLoadingSubjects(false);
     }
 
     initialize();
@@ -45,19 +49,19 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchLessonForSubject() {
-      if (!activeSubject || loading) return;
-      setLoading(true);
+      if (!activeSubject || loadingSubjects) return;
+      setLoadingLesson(true);
       try {
         const fetchedLesson = await getLesson(getLocalDate(), activeSubject);
         setLesson(fetchedLesson);
       } catch (error) {
         console.error("Error fetching lesson:", error);
       }
-      setLoading(false);
+      setLoadingLesson(false);
     }
 
     fetchLessonForSubject();
-  }, [activeSubject]);
+  }, [activeSubject, loadingSubjects]);
 
   return (
     <div>
@@ -66,23 +70,23 @@ export default function Home() {
         activeSubject={activeSubject}
         onSubjectChange={setActiveSubject}
         onSubjectsUpdate={setSubjects}
-        loadingLesson={loading}
+        controlsDisabled={loadingSubjects || loadingLesson}
       />
 
-      {loading && (
+      {loadingLesson && (
         <div className="flex gap-2 items-center my-4">
           <span className="loading loading-dots loading-md"></span>
           <p>Loading lesson</p>
         </div>
       )}
 
-      {!loading && subjects.length === 0 && (
+      {!loadingLesson && (
         <div>
           <p>Please add a subject to get started.</p>
         </div>
       )}
 
-      {!loading && subjects.length > 0 && <LessonView lesson={lesson} />}
+      {!loadingLesson && <LessonView lesson={lesson} />}
     </div>
   );
 }

@@ -6,7 +6,8 @@ from openai import OpenAI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-from tutor.type import Lesson, LessonBase, Resource
+from tutor.type import LessonBase, Resource
+from tutor.db import DB
 from tutor.prompts import lesson_prompt
 
 
@@ -27,13 +28,9 @@ class LessonResourcesResponse(BaseModel):
 
 def generate_lesson(subject: str, date: str, prev_topics: list[str]):
     lesson_base = generate_base(subject, date, prev_topics).lesson
-    lesson = Lesson(
-        id=str(uuid.uuid4()),
-        subject=subject,
-        resources=get_resources(lesson_base.topic).resources,
-        **asdict(lesson_base)
-    )
-    return lesson
+    data = {"id": str(uuid.uuid4()), "subject": subject, "resources": ""}
+    data.update(**asdict(lesson_base))
+    return DB.parse_lesson(data)
 
 
 def generate_base(

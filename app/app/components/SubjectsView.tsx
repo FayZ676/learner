@@ -14,15 +14,16 @@ interface SubjectsViewProps {
 
 export default function SubjectsView({ updateActiveSubject, activeSubject, loadingLesson }: SubjectsViewProps) {
     const [subjectInput, setSubjectInput] = useState<string | null>(null)
-    const [subjects, setSubjects] = useState<string[] | null>(null)
+    const [subjects, setSubjects] = useState<string[]>([])
 
     useEffect(() => {
         async function fetchSubjects() {
             const subjects = await getSubjects()
-            setSubjects(subjects)
             if (subjects) {
+                setSubjects(subjects)
                 updateActiveSubject(subjects[0])
             }
+            // NOTE: How should we handle if no subjects
         }
         fetchSubjects();
     }, [])
@@ -32,7 +33,10 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
             addSubject(subjectInput).then(() => {
                 async function fetchUpdatedSubjects() {
                     const updatedSubjects = await getSubjects();
-                    setSubjects(updatedSubjects);
+                    if (updatedSubjects) {
+                        setSubjects(updatedSubjects);
+                    }
+                    // NOTE: How should we handle if no updatedSubject?
                 }
                 fetchUpdatedSubjects();
                 updateActiveSubject(subjectInput)
@@ -47,8 +51,8 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
     async function handleDeleteSubject() {
         await deleteSubject(activeSubject)
         const subjects = await getSubjects()
-        setSubjects(subjects)
         if (subjects) {
+            setSubjects(subjects)
             updateActiveSubject(subjects[0])
         }
         const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
@@ -61,14 +65,11 @@ export default function SubjectsView({ updateActiveSubject, activeSubject, loadi
         <>
             <h2>Subject</h2>
             <div className='flex gap-2 ml-auto '>
-                {/* NOTE: We need to cache subjects as well. API has cold starts, thats why this doesn't show initially. */}
-                {
-                    subjects && <select className="select w-full" value={activeSubject} onChange={handleChangeSubject}>
-                        {subjects.map((subject, index) => {
-                            return (<option key={index}>{subject}</option>)
-                        })}
-                    </select>
-                }
+                <select className="select w-full" value={activeSubject} onChange={handleChangeSubject}>
+                    {subjects.map((subject, index) => {
+                        return (<option key={index}>{subject}</option>)
+                    })}
+                </select>
                 <button className="btn" disabled={loadingLesson} onClick={() => {
                     const modal = document.getElementById('my_modal_1') as HTMLDialogElement;
                     if (modal) {

@@ -24,7 +24,7 @@ resources_prompt = Template(
 ## Topic
 $topic
 
-Return 1 to 2 resources for the above Topic. Please output a JSON object containing a list of resources with the following fields:
+Return 3 to 5 resources for the above Topic. Please output a JSON object containing a list of resources with the following fields:
 - title
 - link
 - image

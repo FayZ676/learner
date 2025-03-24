@@ -26,58 +26,37 @@ export default function QuizView({ quiz }: { quiz: Question[] }) {
     setSelectedAnswers(updatedAnswers);
   };
 
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < quiz.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      setQuizCompleted(true);
-    }
-  };
-
-  const handlePreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
   const restartQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers(Array(quiz.length).fill(-1));
     setQuizCompleted(false);
   };
 
+  function handleCompleteQuiz() {
+    setQuizCompleted(!quizCompleted);
+  }
+
+  function handleUpdateCurrentQuestion(index: number) {
+    setCurrentQuestionIndex(index);
+  }
+
   return (
     <div>
       <h3>Quiz</h3>
       <div className="max-w-xl mx-auto">
         {!quizCompleted ? (
-          <div className="flex flex-col gap-4">
-            <QuizQuestion
-              question={quiz[currentQuestionIndex]}
-              selectedAnswer={selectedAnswers[currentQuestionIndex]}
-              onAnswerSelect={handleOptionSelect}
-              questionNumber={currentQuestionIndex + 1}
-              totalQuestions={quiz.length}
-            />
-            <div className="card-actions justify-between mt-4">
-              <button
-                onClick={handlePreviousQuestion}
-                disabled={currentQuestionIndex === 0}
-                className="btn btn-ghost"
-              >
-                Previous
-              </button>
-              <button
-                onClick={handleNextQuestion}
-                disabled={selectedAnswers[currentQuestionIndex] === -1}
-                className="btn btn-primary"
-              >
-                {currentQuestionIndex === quiz.length - 1
-                  ? "Finish Quiz"
-                  : "Next Question"}
-              </button>
-            </div>
-          </div>
+          <QuizQuestion
+            question={quiz[currentQuestionIndex]}
+            selectedAnswer={selectedAnswers[currentQuestionIndex]}
+            onAnswerSelect={handleOptionSelect}
+            questionNumber={currentQuestionIndex + 1}
+            totalQuestions={quiz.length}
+            quiz={quiz}
+            selectedAnswers={selectedAnswers}
+            currentQuestionIndex={currentQuestionIndex}
+            completeQuiz={handleCompleteQuiz}
+            updateCurrentQuestion={handleUpdateCurrentQuestion}
+          />
         ) : (
           <QuizResults
             quiz={quiz}

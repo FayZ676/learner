@@ -1,9 +1,10 @@
+import { Check, X } from "lucide-react";
 import { Question } from "../types";
 
 interface QuizResultsProps {
-    quiz: Question[];
-    selectedAnswers: number[];
-    onRestartQuiz: () => void;
+  quiz: Question[];
+  selectedAnswers: number[];
+  onRestartQuiz: () => void;
 }
 
 export default function QuizResults({
@@ -39,18 +40,13 @@ export default function QuizResults({
   const results = calculateResults();
 
   return (
-    <div className="card bg-base-100 shadow-xl">
+    <div className="card bg-base-200 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title">Quiz Results</h2>
-        <div className="mb-6">
-          <div className="stats shadow">
-            <div className="stat">
-              <div className="stat-value text-primary">
-                {results.percentage}%
-              </div>
-              <div className="stat-desc">
-                {results.correct} out of {results.total} correct
-              </div>
+        <div className="bg-base-100 mb-6 stats shadow">
+          <div className="stat">
+            <div className="stat-value text-primary">{results.percentage}%</div>
+            <div className="stat-desc">
+              {results.correct} out of {results.total} correct
             </div>
           </div>
         </div>
@@ -68,7 +64,7 @@ export default function QuizResults({
             return (
               <div
                 key={questionIndex}
-                className="collapse collapse-plus bg-base-200"
+                className="collapse collapse-plus bg-base-100"
               >
                 <input type="checkbox" />
                 <div className="collapse-title font-medium flex justify-between">
@@ -78,7 +74,7 @@ export default function QuizResults({
                       isCorrect ? "badge-success" : "badge-error"
                     }`}
                   >
-                    {isCorrect ? "Correct" : "Incorrect"}
+                    {isCorrect ? <Check /> : <X />}
                   </span>
                 </div>
                 <div className="collapse-content">
@@ -106,7 +102,7 @@ export default function QuizResults({
             );
           })}
         </div>
-        <div className="card-actions justify-center">
+        <div className="card-actions ml-auto">
           <button onClick={onRestartQuiz} className="btn btn-primary">
             Restart Quiz
           </button>

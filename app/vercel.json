@@ -1,0 +1,6 @@
+{
+    "crons": [{
+      "path": "/app/cron",
+      "schedule": "0 10 * * *"
+    }]
+  }

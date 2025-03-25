@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import { Question } from "../types";
 import QuizResults from "./QuizResults";

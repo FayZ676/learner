@@ -1,10 +1,12 @@
-"use cache";
+"use server"
 
 import { z } from "zod";
 
 const SubjectsSchema = z.array(z.string());
 
 export default async function getSubjects() {
+  "use cache"
+  
   try {
     const response = await fetch(`${process.env.API_ENDPOINT}/subjects/get`, {
       method: "GET",

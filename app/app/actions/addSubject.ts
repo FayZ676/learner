@@ -1,3 +1,5 @@
+"use server"
+
 export default async function addSubject(subject: string) {
   try {
     const response = await fetch(

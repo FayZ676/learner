@@ -1,56 +1,32 @@
 import React, { useState } from "react";
-import addSubject from "../actions/addSubject";
-import deleteSubject from "../actions/deleteSubject";
-import getSubjects from "../actions/getSubjects";
+
 import { Trash2 } from "lucide-react";
 
 interface SubjectsViewProps {
-  subjects: string[];
-  activeSubject: string;
+  subjects: string[] | null;
+  activeSubject: string | null;
   onSubjectChange: (subject: string) => void;
-  onSubjectsUpdate: (subjects: string[]) => void;
-  controlsDisabled: boolean;
+  onSubjectAdd: (subjects: string) => void;
+  onSubjectDelete: (subject: string) => void;
+  loading: boolean;
 }
 
 export default function SubjectsView({
   subjects,
   activeSubject,
   onSubjectChange,
-  onSubjectsUpdate,
-  controlsDisabled,
+  onSubjectAdd,
+  onSubjectDelete,
+  loading,
 }: SubjectsViewProps) {
   const [subjectInput, setSubjectInput] = useState<string>("");
 
   function handleAddSubject() {
     if (subjectInput.trim()) {
-      addSubject(subjectInput).then(async () => {
-        const updatedSubjects = await getSubjects();
-        if (updatedSubjects) {
-          onSubjectsUpdate(updatedSubjects);
-          onSubjectChange(subjectInput);
-        }
-        setSubjectInput("");
-      });
+      onSubjectAdd(subjectInput.trim());
+      onSubjectChange(subjectInput.trim());
+      setSubjectInput("");
     }
-  }
-
-  function handleChangeSubject(e: React.ChangeEvent<HTMLSelectElement>) {
-    onSubjectChange(e.target.value);
-  }
-
-  async function handleDeleteSubject(subject: string) {
-      await deleteSubject(subject);
-      closeModal();
-      const updatedSubjects = await getSubjects();
-      if (updatedSubjects && updatedSubjects.length > 0) {
-        onSubjectsUpdate(updatedSubjects);
-        if (subject === activeSubject) {
-          onSubjectChange(updatedSubjects[0]);
-        }
-      } else {
-        onSubjectsUpdate([]);
-        onSubjectChange("");
-      }
   }
 
   function openModal() {
@@ -74,17 +50,20 @@ export default function SubjectsView({
         <div className="join">
           <select
             className="select w-full join-item"
-            value={activeSubject}
-            onChange={handleChangeSubject}
-            disabled={controlsDisabled}
+            value={activeSubject ? activeSubject : ""}
+            onChange={(e) => {
+              onSubjectChange(e.target.value);
+            }}
+            disabled={!subjects || loading}
           >
-            {subjects.map((subject, index) => (
-              <option key={index}>{subject}</option>
-            ))}
+            {subjects &&
+              subjects.map((subject, index) => (
+                <option key={index}>{subject}</option>
+              ))}
           </select>
           <button
+            disabled={loading}
             className="btn join-item"
-            disabled={controlsDisabled}
             onClick={openModal}
           >
             manage
@@ -95,7 +74,7 @@ export default function SubjectsView({
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg mb-4 mt-0">Manage Subjects</h3>
-          {subjects.length > 0 ? (
+          {subjects && subjects.length > 0 ? (
             <ul className="list-none pl-0">
               {subjects.map((subject, index) => (
                 <li
@@ -106,7 +85,8 @@ export default function SubjectsView({
                   <button
                     className="btn btn-sm btn-error"
                     onClick={() => {
-                      handleDeleteSubject(subject);
+                      onSubjectDelete(subject);
+                      closeModal();
                     }}
                   >
                     <Trash2 strokeWidth={2} />

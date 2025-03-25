@@ -20,7 +20,7 @@ export default async function Home() {
   let initialSubject = null;
   const initialSubjects = await getSubjects();
   let initialLesson = null;
-  if (initialSubjects) {
+  if (initialSubjects && initialSubjects.length > 0) {
     initialSubject = initialSubjects[0];
     initialLesson = await getLesson(await getDateFromHeaders(), initialSubject);
   }

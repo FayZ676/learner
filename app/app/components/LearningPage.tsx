@@ -12,6 +12,7 @@ import getLesson from "../actions/getLesson";
 import addSubject from "../actions/addSubject";
 import getSubjects from "../actions/getSubjects";
 import deleteSubject from "../actions/deleteSubject";
+import Loading from "../loading";
 
 interface LearningPageProps {
   initialSubjects: string[] | null;
@@ -80,7 +81,7 @@ export default function LearningPage({
         onSubjectDelete={handleSubjectDelete}
         loading={loading}
       />
-      <LessonView lesson={lesson} />
+      {!loading ? <LessonView lesson={lesson} /> : <Loading />}
     </div>
   );
 }

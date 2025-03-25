@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { Lesson } from "./types";
 import getLesson from "./actions/getLesson";
 import getSubjects from "./actions/getSubjects";
@@ -15,7 +16,6 @@ function getLocalDate(): string {
 }
 
 export default function Home() {
-  // In page.tsx:
   const [loadingSubjects, setLoadingSubjects] = useState<boolean>(true);
   const [loadingLesson, setLoadingLesson] = useState<boolean>(false);
   const [subjects, setSubjects] = useState<string[]>([]);

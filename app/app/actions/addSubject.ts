@@ -1,7 +1,3 @@
-"use server";
-
-import { revalidateTag } from 'next/cache'
-
 export default async function addSubject(subject: string) {
   try {
     const response = await fetch(
@@ -13,7 +9,6 @@ export default async function addSubject(subject: string) {
         },
       }
     );
-    revalidateTag('subjects')
     if (!response.ok) {
       throw new Error("Failed to fetch data");
     }

@@ -1,17 +1,10 @@
-"use server";
+"use cache";
 
 import { z } from "zod";
-
-import { unstable_cacheTag as cacheTag } from "next/cache";
-import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 const SubjectsSchema = z.array(z.string());
 
 export default async function getSubjects() {
-  "use cache";
-  cacheLife("hours")
-  cacheTag("subjects");
-
   try {
     const response = await fetch(`${process.env.API_ENDPOINT}/subjects/get`, {
       method: "GET",

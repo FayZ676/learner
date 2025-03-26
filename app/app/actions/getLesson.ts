@@ -43,7 +43,6 @@ export default async function getLesson(
     .eq("date", date)
     .eq("subject", subject);
   if (error) {
-    console.error(error);
     throw new Error(error.message);
   }
   if (data.length > 0) {

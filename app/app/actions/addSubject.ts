@@ -1,20 +1,10 @@
-"use server"
+"use server";
+
+import { client } from "@/app/actions/supabaseClient";
 
 export default async function addSubject(subject: string) {
-  try {
-    const response = await fetch(
-      `${process.env.API_ENDPOINT}/subjects/add?subject=${subject}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-  } catch (error) {
-    console.error("Error fetching subjects:", error);
+  const { error } = await client.from("subjects").insert({ subject: subject });
+  if (error) {
+    throw new Error(error.message);
   }
 }

@@ -9,12 +9,14 @@ import SubjectsView from "./SubjectsView";
 import LessonView from "./LessonView";
 
 import getLessons from "../actions/getLessons";
-import addSubject from "../actions/addSubject";
+import getNewLesson from "../actions/getNewLesson";
 import getSubjects from "../actions/getSubjects";
+import addSubject from "../actions/addSubject";
 import deleteSubject from "../actions/deleteSubject";
 import deleteLessons from "../actions/deleteLessons";
 
 import Loading from "../loading";
+import addLesson from "../actions/addLesson";
 
 interface LearningPageProps {
   initialSubjects: string[] | null;
@@ -51,10 +53,15 @@ export default function LearningPage({
     setLoading(true);
     await addSubject(newSubject);
     const updatedSubjects = await getSubjects();
-    const lessons = await getLessons(await getLocalDate(), newSubject);
+    const newLesson = await getNewLesson({
+      date: await getLocalDate(),
+      subject: newSubject,
+      previousSubjects: [],
+    });
+    await addLesson(newLesson);
     setSubjects(updatedSubjects);
     setActiveSubject(newSubject);
-    setLesson(lessons ? lessons[0] : null);
+    setLesson(newLesson);
     setLoading(false);
   }
 

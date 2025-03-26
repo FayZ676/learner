@@ -38,7 +38,7 @@ export default async function getLessons(
   subject: string
 ): Promise<Lesson[] | null> {
   "use cache";
-  cacheTag("lessonsCache")
+  cacheTag("lessonsCache");
 
   const { data, error } = await client
     .from("lessons")
@@ -49,15 +49,17 @@ export default async function getLessons(
     throw new Error(error.message);
   }
   if (data.length > 0) {
-    return data.map((lesson) => {
-      const parsed = LessonSchema.safeParse(lesson);
-      if (parsed.success) {
-        return parsed.data;
-      } else {
-        console.error("Failed to parse lesson:", parsed.error.errors);
-        return null;
-      }
-    }).filter((lesson) => lesson !== null);
+    return data
+      .map((lesson) => {
+        const parsed = LessonSchema.safeParse(lesson);
+        if (parsed.success) {
+          return parsed.data;
+        } else {
+          console.log(lesson)
+          throw new Error(`Failed to parse lesson: ${parsed.error.errors}`);
+        }
+      })
+      .filter((lesson) => lesson !== null);
   }
   return null;
 }

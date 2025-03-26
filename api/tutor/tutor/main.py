@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 from tutor.lesson import generate_lesson
 
@@ -6,6 +7,11 @@ from tutor.lesson import generate_lesson
 app = FastAPI()
 
 
-@app.get("/lesson/get")
-def lesson_get(date: str, subject: str, prev_topics: list[str]):
-    return generate_lesson(subject, date, prev_topics)
+class LessonRequest(BaseModel):
+    subject: str
+    previousSubjects: list[str]
+
+
+@app.post("/lesson/generate")
+def lesson_get(request: LessonRequest):
+    return generate_lesson(request.subject, request.previousSubjects)

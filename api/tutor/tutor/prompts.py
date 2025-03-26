@@ -3,9 +3,6 @@ from string import Template
 
 lesson_prompt = Template(
     """
-## Date
-$date
-
 ## Subject
 $subject
 
@@ -22,13 +19,31 @@ Return a lesson to assist in the study of the above subject. Make sure that the 
 resources_prompt = Template(
     """
 ## Topic
-$topic
+$topic.
 
-Return 1 to 2 resources for the above Topic. Please output a JSON object containing a list of resources with the following fields:
+## Instructions
+Your task is to find and authenticate high quality resources that can assist in the research and learning of the above topic.
+
+## Reponse Format
+Respond with a JSON object containing a list of resources with the following fields:
 - title
 - link
-- image
+Be VERY careful when formatting the links and titles. Any addition of extraneous double quotes will result in invalid JSON. Strictly follow the below example when formatting your response.
+{
+    "resources": [
+        { 
+            "title": "some resource", 
+            "link": "https://someresourceurl.com"
+        },
+        { 
+            "title": "some other resource", 
+            "link": "https://someotherresourceurl.com"
+        },
+        ...
+    ]
+}
 
-Do not include any pre-amble, any post-amble. Do not include the "```json ... ```" ticks either. Simply return the raw JSON as is.
+## Restrictions
+DO NOT include any pre-amble or any post-amble. Do not include "```json ... ```" tickers or any kind of formatting. Simply return raw JSON as is.
 """
 )

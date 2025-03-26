@@ -19,12 +19,10 @@ class Question(BaseModel):
 class Resource(BaseModel):
     title: str
     link: str
-    image: str | None
 
 
 @dataclass(eq=True, frozen=True)
 class LessonBase(BaseModel):
-    date: str
     topic: str
     description: str
     quiz: list[Question]

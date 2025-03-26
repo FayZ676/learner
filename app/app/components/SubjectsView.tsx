@@ -24,7 +24,6 @@ export default function SubjectsView({
   function handleAddSubject() {
     if (subjectInput.trim()) {
       onSubjectAdd(subjectInput.trim());
-      onSubjectChange(subjectInput.trim());
       setSubjectInput("");
     }
   }

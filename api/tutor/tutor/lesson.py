@@ -1,4 +1,5 @@
 import os
+import json
 import uuid
 import requests
 from dataclasses import asdict
@@ -7,8 +8,7 @@ from openai import OpenAI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-from tutor.type import LessonBase, Resource
-from tutor.db import DB
+from tutor.type import LessonBase, Resource, Lesson, Question
 from tutor.prompts import lesson_prompt, resources_prompt
 
 
@@ -36,7 +36,7 @@ def generate_lesson(subject: str, date: str, prev_topics: list[str]):
         "resources": [asdict(r) for r in get_resources(lesson_base.topic).resources],
     }
     data.update(**asdict(lesson_base))
-    return DB.parse_lesson(data)
+    return parse_lesson(data)
 
 
 def generate_base(
@@ -94,6 +94,22 @@ def get_resources(message: str, system: str = "") -> LessonResourcesResponse:
     response = requests.request("POST", url, json=payload, headers=headers).json()
     return LessonResourcesResponse.model_validate_json(
         response["choices"][0]["message"]["content"]
+    )
+
+
+def parse_lesson(lesson: dict) -> Lesson:
+    quiz = [
+        Question.model_validate_json(json.dumps(q)) for q in lesson.get("quiz", [])
+    ]
+    l = Lesson.model_validate_json(json.dumps(lesson))
+    return Lesson(
+        id=l.id,
+        date=l.date,
+        subject=l.subject,
+        topic=l.topic,
+        description=l.description,
+        resources=l.resources,
+        quiz=quiz,
     )
 
 

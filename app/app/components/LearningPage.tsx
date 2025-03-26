@@ -81,7 +81,7 @@ export default function LearningPage({
         onSubjectDelete={handleSubjectDelete}
         loading={loading}
       />
-      {/* {!loading ? <LessonView lesson={lesson} /> : <Loading />} */}
+      {!loading ? <LessonView lesson={lesson} /> : <Loading />}
     </div>
   );
 }

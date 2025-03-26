@@ -1,6 +1,8 @@
-"use server"
+"use server";
 
 import { z } from "zod";
+
+import { client } from "@/app/actions/supabaseClient";
 
 import { Lesson } from "../types";
 
@@ -33,32 +35,24 @@ export default async function getLesson(
   date: string,
   subject: string
 ): Promise<Lesson | null> {
-  "use cache"
-  
-  try {
-    const response = await fetch(
-      `${process.env.API_ENDPOINT}/lesson/get?date=${date}&subject=${subject}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const data = await response.json();
-    const parsedLesson = LessonSchema.safeParse(data);
+  "use cache";
 
-    if (parsedLesson.success) {
-      return parsedLesson.data;
-    } else {
-      console.error("Invalid lesson structure:", parsedLesson.error);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching lesson:", error);
-    return null;
+  const { data, error } = await client
+    .from("lessons")
+    .select()
+    .eq("date", date)
+    .eq("subject", subject);
+  if (error) {
+    console.error(error);
+    throw new Error(error.message);
   }
+  if (data.length > 0) {
+    const parsed = LessonSchema.safeParse(data[0]);
+    if (parsed.success) {
+      return parsed.data;
+    } else {
+      throw new Error(parsed.error.message);
+    }
+  }
+  return null;
 }

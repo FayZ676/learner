@@ -1,5 +1,7 @@
 "use server";
 
+import { unstable_cacheTag as cacheTag } from "next/cache";
+
 import { z } from "zod";
 
 import { client } from "@/app/actions/supabaseClient";
@@ -31,11 +33,12 @@ const LessonSchema = z.object({
   resources: z.array(ResourceSchema),
 });
 
-export default async function getLesson(
+export default async function getLessons(
   date: string,
   subject: string
-): Promise<Lesson | null> {
+): Promise<Lesson[] | null> {
   "use cache";
+  cacheTag("lessonsCache")
 
   const { data, error } = await client
     .from("lessons")
@@ -46,12 +49,15 @@ export default async function getLesson(
     throw new Error(error.message);
   }
   if (data.length > 0) {
-    const parsed = LessonSchema.safeParse(data[0]);
-    if (parsed.success) {
-      return parsed.data;
-    } else {
-      throw new Error(parsed.error.message);
-    }
+    return data.map((lesson) => {
+      const parsed = LessonSchema.safeParse(lesson);
+      if (parsed.success) {
+        return parsed.data;
+      } else {
+        console.error("Failed to parse lesson:", parsed.error.errors);
+        return null;
+      }
+    }).filter((lesson) => lesson !== null);
   }
   return null;
 }

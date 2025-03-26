@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import getLesson from "./actions/getLesson";
+import getLessons from "./actions/getLessons";
 import getSubjects from "./actions/getSubjects";
 
 import LearningPage from "./components/LearningPage";
@@ -22,7 +22,11 @@ export default async function Home() {
   let initialLesson = null;
   if (initialSubjects && initialSubjects.length > 0) {
     initialSubject = initialSubjects[0];
-    initialLesson = await getLesson(await getDateFromHeaders(), initialSubject);
+    const lessons = await getLessons(
+      await getDateFromHeaders(),
+      initialSubject
+    );
+    initialLesson = lessons ? lessons[0] : null;
   }
 
   return (

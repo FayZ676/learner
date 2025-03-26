@@ -8,10 +8,12 @@ import { Lesson } from "../types";
 import SubjectsView from "./SubjectsView";
 import LessonView from "./LessonView";
 
-import getLesson from "../actions/getLesson";
+import getLessons from "../actions/getLessons";
 import addSubject from "../actions/addSubject";
 import getSubjects from "../actions/getSubjects";
 import deleteSubject from "../actions/deleteSubject";
+import deleteLessons from "../actions/deleteLessons";
+
 import Loading from "../loading";
 
 interface LearningPageProps {
@@ -39,9 +41,9 @@ export default function LearningPage({
 
   async function handleSubjectChange(subjectChange: string) {
     setLoading(true);
-    const newLesson = await getLesson(await getLocalDate(), subjectChange);
+    const lessons = await getLessons(await getLocalDate(), subjectChange);
     setActiveSubject(subjectChange);
-    setLesson(newLesson);
+    setLesson(lessons ? lessons[0] : null);
     setLoading(false);
   }
 
@@ -49,25 +51,26 @@ export default function LearningPage({
     setLoading(true);
     await addSubject(newSubject);
     const updatedSubjects = await getSubjects();
-    const updatedLesson = await getLesson(await getLocalDate(), newSubject);
+    const lessons = await getLessons(await getLocalDate(), newSubject);
     setSubjects(updatedSubjects);
     setActiveSubject(newSubject);
-    setLesson(updatedLesson);
+    setLesson(lessons ? lessons[0] : null);
     setLoading(false);
   }
 
   async function handleSubjectDelete(oldSubject: string) {
     setLoading(true);
     await deleteSubject(oldSubject);
+    await deleteLessons(oldSubject);
     const updatedSubjects = await getSubjects();
     const newActiveSubject =
       updatedSubjects && updatedSubjects.length > 0 ? updatedSubjects[0] : null;
-    const updatedLesson = newActiveSubject
-      ? await getLesson(await getLocalDate(), newActiveSubject)
+    const lessons = newActiveSubject
+      ? await getLessons(await getLocalDate(), newActiveSubject)
       : null;
     setSubjects(updatedSubjects);
     setActiveSubject(newActiveSubject);
-    setLesson(updatedLesson);
+    setLesson(lessons ? lessons[0] : null);
     setLoading(false);
   }
 

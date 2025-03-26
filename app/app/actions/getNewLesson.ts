@@ -68,7 +68,7 @@ export default async function getNewLesson({
       ...parsedData,
       date,
     };
-  } catch (error) {
+  } catch {
     throw new Error("Unable to retrieve new lesson from API.");
   }
 }

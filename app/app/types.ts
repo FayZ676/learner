@@ -1,5 +1,3 @@
-import { it } from "node:test";
-
 export interface Answer {
   text: string;
   is_correct: boolean;
